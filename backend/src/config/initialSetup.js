@@ -26,7 +26,7 @@ async function createRoles() {
   }
 }
 
-async function newRoles(){
+async function newRoles() {
   try {
     const count = await Role.estimatedDocumentCount();
     if (count >= 4) return;
@@ -39,7 +39,6 @@ async function newRoles(){
   } catch (error) {
     console.error(error);
   }
-
 }
 
 /**
@@ -79,5 +78,5 @@ async function createUsers() {
 module.exports = {
   createRoles,
   createUsers,
-  newRoles
+  newRoles,
 };

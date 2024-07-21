@@ -16,6 +16,7 @@ const emprendedorRoutes = require("./emprendedor.routes.js");
 const inscripcionRoutes = require("./inscripcion.routes.js");
 const actividadRoutes = require("./actividad.routes.js");
 const reportRoutes = require("./report.routes.js"); // Añadir importación de report.routes.js
+const productRoutes = require("./productRoutes.js");
 
 // Define las rutas para los usuarios /api/usuarios
 router.use("/users", authenticationMiddleware, userRoutes);
@@ -37,6 +38,7 @@ router.use("/inscripcion", authenticationMiddleware, inscripcionRoutes);
 router.use("/actividad", authenticationMiddleware, actividadRoutes);
 // Define las rutas para los reportes /api/reports
 router.use("/reports", authenticationMiddleware, reportRoutes); // Añadir uso de rutas de reportes
-
+// dsa
+router.use("/prueba", authenticationMiddleware, productRoutes);
 // Exporta el enrutador
 module.exports = router;

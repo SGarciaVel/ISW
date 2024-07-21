@@ -19,6 +19,7 @@ async function getCarreras(req, res) {
   }
 }
 
+
 async function getCarreraById(req, res) {
   try {
     const { params } = req;

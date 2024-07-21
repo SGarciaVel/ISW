@@ -18,6 +18,7 @@ const productosBodySchema = Joi.object({
       "string.base": "categoría debe ser de tipo string.",
       "string.max": "La categoría debe tener un máximo de 100 caracteres.",
       "string.pattern.base":
+        // eslint-disable-next-line max-len
         "La categoría debe tener debe tener las primeras letras en mayúscula y las palabras separadas por un espacio.",
     }),
   descripcion: Joi.string().required().max(255).messages({

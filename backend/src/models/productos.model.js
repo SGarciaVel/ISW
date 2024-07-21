@@ -1,7 +1,7 @@
 "use strict";
 const mongoose = require("mongoose");
 
-//Cada emprendimiento tiene un arreglo de productos.
+// Cada emprendimiento tiene un arreglo de productos.
 
 const productosSchema = new mongoose.Schema(
   {

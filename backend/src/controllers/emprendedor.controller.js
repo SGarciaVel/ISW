@@ -61,7 +61,7 @@ async function getProductosByEmprendedor(req, res) {
   }
 }
 
-async function getAyudantesByEmprendedor(req, res){
+async function getAyudantesByEmprendedor(req, res) {
   try {
     const { params } = req;
     const { error: paramsError } =

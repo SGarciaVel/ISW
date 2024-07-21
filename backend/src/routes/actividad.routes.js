@@ -14,8 +14,6 @@ router.put("/:id", authorizationMw.isAdminOrManagement, actividadController.upda
 router.delete("/:id", authorizationMw.isAdminOrManagement, actividadController.deleteActividad);
 router.post("/inscribir", authorizationMw.isAdminOrManagement, actividadController.inscribirYNotificarEmprendedor);
 
-router.post("/:id/enroll", authorizationMw.isEmprendedor, asistenciaController.inscribir);
-router.post("/:id/confirm", authorizationMw.isEmprendedor, asistenciaController.confirmar);
 
 module.exports = router;
 //
