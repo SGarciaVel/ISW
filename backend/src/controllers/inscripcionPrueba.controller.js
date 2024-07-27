@@ -4,9 +4,26 @@ const { inscripcionSchema } = require("../schema/inscripcion.schema");
 
 // Obtiene todas las inscripciones
 exports.getAllInscripciones = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // filtros adicionales
+  const filters = {};
+  if (req.query.estado) {
+    filters.estado = req.query.estado;
+  }
+
   try {
-    const inscripciones = await Inscripcion.find();
-    respondSuccess(req, res, 200, inscripciones);
+    const inscripciones = await Inscripcion.find().skip(skip).limit(limit);
+    const total = await Inscripcion.countDocuments(filters);
+    // respondSuccess(req, res, 200, inscripciones);
+    respondSuccess(req, res, 200, {
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+      inscripciones,
+    });
   } catch (error) {
     respondError(req, res, 500, "Error al obtener las inscripciones");
   }

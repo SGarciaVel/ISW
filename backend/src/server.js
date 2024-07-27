@@ -11,6 +11,7 @@ const cookieParser = require("cookie-parser");
 /** El enrutador principal */
 const indexRoutes = require("./routes/indexPrueba.routes.js");
 const authRoutes = require("./routes/auth.routes.js");
+const inscripcionRoutes = require("./routes/inscripcionPrueba.routes.js");
 // Importa el archivo 'configDB.js' para crear la conexión a la base de datos
 
 const { setupDB } = require("./config/configDB.js");
@@ -39,6 +40,7 @@ async function setupServer() {
     // Agrega el enrutador principal al servidor
     server.use("/api", indexRoutes);
     server.use("/api", authRoutes);
+    server.use("/api", inscripcionRoutes);
 
     // Inicia el servidor en el puerto especificado
     server.listen(PORT, () => {
