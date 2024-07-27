@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+/*const mongoose = require("mongoose");
 
 const InscripcionSchema = new mongoose.Schema({
   // otros campos
@@ -19,3 +19,4 @@ const InscripcionSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Inscripcion", InscripcionSchema);
+*/

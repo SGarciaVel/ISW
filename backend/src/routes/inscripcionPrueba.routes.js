@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const inscripcionPruebaController = require("../controllers/inscripcionPrueba.controller");
-const authorizationMiddleware = require("../middlewares/authorizationPrueba.middleware");
+// const authorizationMiddleware = require("../middlewares/authorizationPrueba.middleware");
 const {
   authenticateToken,
   isAdmin,
@@ -23,18 +23,22 @@ router.post(
 
 router.get(
   "/",
-  authorizationMiddleware,
+  authenticateToken,
   inscripcionPruebaController.getAllInscripciones,
 );
 router.get("/:id", inscripcionPruebaController.getInscripcionById);
 
 router.put(
   "/:id",
-  authorizationMiddleware,
+  authenticateToken,
+  isAdminOrManagement,
   inscripcionPruebaController.updateInscripcion,
 );
 
+// Ruta para actualizar una inscripción
+//router.put("/inscripciones/:id", inscripcionPruebaController.updateInscripcion);
+
 // router.post("/", inscripcionPruebaController.createInscripcion);
-router.delete("/:id", inscripcionPruebaController.deleteInscripcion);
+router.delete("/:id", authenticateToken, inscripcionPruebaController.deleteInscripcion);
 
 module.exports = router;

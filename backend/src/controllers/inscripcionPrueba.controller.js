@@ -1,6 +1,9 @@
 const Inscripcion = require("../models/inscripcion.model");
+const User = require("../models/user.model");
 const { respondSuccess, respondError } = require("../utils/resHandler");
 const { inscripcionSchema } = require("../schema/inscripcion.schema");
+const sendMail = require("../utils/nodemailer");
+const Joi = require("joi");
 
 // Obtiene todas las inscripciones
 exports.getAllInscripciones = async (req, res) => {
@@ -46,25 +49,7 @@ exports.getInscripcionById = async (req, res) => {
 // Crea una nueva inscripción
 exports.createInscripcion = async (req, res) => {
   try {
-    const {
-      nombre,
-      email,
-      estado,
-      comentario,
-      postulante,
-      emprendedorId,
-      userId,
-    } = req.body;
-    if (
-      !nombre ||
-      !email ||
-      !estado ||
-      !postulante ||
-      !emprendedorId ||
-      !userId
-    ) {
-      return respondError(req, res, 400, "Faltan campos requeridos");
-    }
+    //aqui iba la validacion manual
     console.log("Datos recibidos para crear inscripción:", req.body);
     const { error, value } = inscripcionSchema.validate(req.body);
     if (error) {
@@ -87,25 +72,60 @@ exports.createInscripcion = async (req, res) => {
 
 // Actualiza una inscripción existente
 exports.updateInscripcion = async (req, res) => {
+  console.log(
+    "Solicitud para actualizar inscripción recibida",
+    req.params,
+    req.body,
+  );
   const { id } = req.params;
   const { estado, comentario } = req.body;
 
   try {
-    const { error, value } = inscripcionSchema.validate({ estado, comentario });
+    console.log("Validando datos de la solicitud");
+    // Usa Joi para validar el objeto completo
+    const { error, value } = Joi.object({
+      estado: Joi.string().valid("pendiente", "aprobada", "rechazada", "sin inscripciones").required(),
+      comentario: Joi.string().required(),
+    }).validate({ estado, comentario });
+
     if (error) {
+      console.log("Error de validación:", error.details[0].message);
       return respondError(req, res, 400, error.details[0].message);
     }
 
+    console.log("Actualizando inscripción en la base de datos");
     const inscripcion = await Inscripcion.findByIdAndUpdate(
       id,
       { estado: value.estado, comentario: value.comentario },
       { new: true },
     );
     if (!inscripcion) {
+      console.log("Inscripción no encontrada");
       return respondError(req, res, 404, "Inscripción no encontrada");
     }
+
+    // Enviar correo de notificación
+    console.log("Enviando correo de notificación");
+    const user = await User.findById(inscripcion.userId); // Asegúrate de que `user` esté correctamente inicializado
+    if (user) {
+      const subject = "Estado de tu postulación";
+      const text = `Hola ${user.nombre},\n\nTu postulación ha sido ${estado}.\n\nComentario: ${comentario}`;
+      await sendMail(user.email, subject, text);
+
+      // Asigna rol de emprendedor si es aceptada
+      if (estado === "aceptado") {
+        console.log("Asignando rol de emprendedor al usuario");
+        user.role = "emprendedor";
+        await user.save();
+      }
+    } else {
+      console.log("Usuario no encontrado para enviar correo de notificación");
+    }
+
+    console.log("Solicitud procesada exitosamente");
     respondSuccess(req, res, 200, inscripcion);
   } catch (error) {
+    console.error("Error al actualizar la inscripción:", error);
     respondError(req, res, 500, "Error al actualizar la inscripción");
   }
 };

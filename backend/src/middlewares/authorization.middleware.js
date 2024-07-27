@@ -61,7 +61,7 @@ async function isAdmin(req, res, next) {
   }
 }
 
-//Comprueba si el usuario es Emprendedor
+// Comprueba si el usuario es Emprendedor
 async function isEmprendedor(req, res, next) {
   try {
     const user = await User.findOne({ email: req.email });
@@ -83,8 +83,8 @@ async function isEmprendedor(req, res, next) {
 
 /**
  * Comprueba si el usuario es un administrador o si es el propietario de los datos, y permitiría el acceso a la ruta en cualquiera de esos casos.
-   1.- A través del token JWT se obtiene el email del usuario
-   2.- Si el id del usuario es igual al id del usuario que se quiere modificar, se permite la acción
+  1.- A través del token JWT se obtiene el email del usuario
+  2.- Si el id del usuario es igual al id del usuario que se quiere modificar, se permite la acción
  */
 async function isOwnerOrAdmin(req, res, next) {
   try {
@@ -177,6 +177,7 @@ async function isBusinessOwnerOrAdmin(req, res, next) {
 // Middlewares para actividades
 
 async function isAdminOrManagement(req, res, next) {
+  console.log("Pasando por isAdminOrManagement middleware");
   try {
     const user = await User.findOne({ email: req.email });
     const roles = await Role.find({ _id: { $in: user.roles } });
