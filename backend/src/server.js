@@ -9,7 +9,8 @@ const morgan = require("morgan");
 // Importa el módulo 'cookie-parser' para manejar las cookies
 const cookieParser = require("cookie-parser");
 /** El enrutador principal */
-const indexRoutes = require("./routes/index.routes.js");
+const indexRoutes = require("./routes/indexPrueba.routes.js");
+const authRoutes = require("./routes/auth.routes.js");
 // Importa el archivo 'configDB.js' para crear la conexión a la base de datos
 
 const { setupDB } = require("./config/configDB.js");
@@ -37,6 +38,7 @@ async function setupServer() {
     server.use(morgan("dev"));
     // Agrega el enrutador principal al servidor
     server.use("/api", indexRoutes);
+    server.use("/api", authRoutes);
 
     // Inicia el servidor en el puerto especificado
     server.listen(PORT, () => {

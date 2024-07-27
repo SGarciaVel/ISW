@@ -35,6 +35,9 @@ async function createUser(req, res) {
     const { error: bodyError } = userBodySchema.validate(body);
     if (bodyError) return respondError(req, res, 400, bodyError.message);
 
+    // Encripta la contraseña aqui
+    body.password = await UserService.encryptPassword(body.password);
+
     const [newUser, userError] = await UserService.createUser(body);
 
     if (userError) return respondError(req, res, 400, userError);

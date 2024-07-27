@@ -3,17 +3,17 @@ const express = require("express");
 const router = express.Router();
 
 /** Middleware de autenticación */
-const authenticationMiddleware = require("../middlewares/authentication.middleware.js");
+const authenticationMiddleware = require("../middlewares/authenticationPrueba.middleware.js");
 
 // Importa los enrutadores
-const userRoutes = require("./user.routes.js");
+const userRoutes = require("./userPrueba.routes.js");
 const rolesRoutes = require("./roles.routes.js");
 const authRoutes = require("./auth.routes.js");
 const carreraRoutes = require("./carrera.routes.js");
 const ayudantesRoutes = require("./ayudantes.routes.js");
-const productosRoutes = require("./productos.routes.js");
+const productosRoutes = require("./productosPrueba.routes.js");
 const emprendedorRoutes = require("./emprendedor.routes.js");
-const inscripcionRoutes = require("./inscripcion.routes.js");
+const inscripcionRoutes = require("./inscripcionPrueba.routes.js");
 const actividadRoutes = require("./actividad.routes.js");
 const reportRoutes = require("./report.routes.js"); // Añadir importación de report.routes.js
 const productRoutes = require("./productRoutes.js");
@@ -33,7 +33,7 @@ router.use("/productos", authenticationMiddleware, productosRoutes);
 // Define las rutas para el emprendedor /api/emprendedores
 router.use("/emprendedor", authenticationMiddleware, emprendedorRoutes);
 // Define las rutas para las inscripciones /api/inscripcion
-router.use("/inscripcion", authenticationMiddleware, inscripcionRoutes);
+router.use("/inscripcionPruebas", authenticationMiddleware, inscripcionRoutes);
 // Define las rutas para las actividades /api/actividades
 router.use("/actividad", authenticationMiddleware, actividadRoutes);
 // Define las rutas para los reportes /api/reports

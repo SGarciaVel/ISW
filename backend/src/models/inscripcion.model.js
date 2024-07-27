@@ -2,10 +2,19 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-//usuario envía formulario de inscripción. Se crea un registro en la colección inscripciones.
+// usuario envía formulario de inscripción. Se crea un registro en la colección inscripciones.
 
 const inscripcionSchema = new mongoose.Schema(
   {
+    nombre: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     userId: {
       type: Schema.ObjectId,
       ref: "user",
@@ -14,6 +23,15 @@ const inscripcionSchema = new mongoose.Schema(
     emprendedorId: {
       type: Schema.ObjectId,
       ref: "Emprendedor",
+      required: true,
+    },
+    comentario: {
+      type: String,
+      default: "",
+    },
+    postulante: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Postulante",
       required: true,
     },
     estado: {

@@ -26,6 +26,7 @@ async function login(user) {
     const userFound = await User.findOne({ email: email })
       .populate("roles")
       .exec();
+    console.log("User Found:", userFound);
     if (!userFound) {
       return [null, null, "El usuario y/o contraseña son incorrectos"];
     }
@@ -34,6 +35,7 @@ async function login(user) {
       password,
       userFound.password,
     );
+    console.log("Password Match:", matchPassword);
 
     if (!matchPassword) {
       return [null, null, "El usuario y/o contraseña son incorrectos"];

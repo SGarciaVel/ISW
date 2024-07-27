@@ -47,7 +47,18 @@ const inscripcionIdSchema = Joi.object({
     }),
 });
 
+const inscripcionSchema = Joi.object({
+  nombre: Joi.string().required(),
+  email: Joi.string().email().required(),
+  estado: Joi.string().valid("pendiente", "aprobada", "rechazada", "sin inscripciones").required(),
+  comentario: Joi.string().required(),
+  postulante: Joi.string().required(),
+  emprendedorId: Joi.string().required(),
+  userId: Joi.string().required(),
+});
+
 module.exports = {
   inscripcionBodySchema,
   inscripcionIdSchema,
+  inscripcionSchema,
 };

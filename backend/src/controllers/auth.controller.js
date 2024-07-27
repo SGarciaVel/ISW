@@ -22,6 +22,7 @@ async function login(req, res) {
 
     const [accessToken, refreshToken, errorToken] =
       await AuthServices.login(body);
+    console.log("Tokens:", { accessToken, refreshToken });
 
     if (errorToken) return respondError(req, res, 400, errorToken);
 

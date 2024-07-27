@@ -3,7 +3,7 @@
 const productosController = require("../controllers/productos.controller.js");
 
 const express = require("express");
-const router = express.Router();
+const routera = express.Router();
 const authorizationMiddleware = require("../middlewares/authorization.middleware.js");
 const authenticationMiddleware = require("../middlewares/authentication.middleware.js");
 router.use(authenticationMiddleware);

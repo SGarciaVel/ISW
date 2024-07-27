@@ -140,4 +140,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  encryptPassword: User.encryptedPassword,
 };
