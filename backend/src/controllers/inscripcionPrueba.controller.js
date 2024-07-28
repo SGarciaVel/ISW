@@ -2,6 +2,7 @@ const Inscripcion = require("../models/inscripcion.model");
 const User = require("../models/user.model");
 // const Emprendedor = require("../models/emprendedor.model");
 const Postulante = require("../models/postulante.model");
+const Emprendedor = require("../models/emprendedor.model");
 const { respondSuccess, respondError } = require("../utils/resHandler");
 const { inscripcionSchema } = require("../schema/inscripcion.schema");
 const { postulanteSchema } = require("../schema/postulante.schema");
@@ -54,22 +55,14 @@ exports.createInscripcion = async (req, res) => {
   try {
     console.log("Datos recibidos para crear inscripción:", req.body);
 
-    // Separar datos del postulante y de la inscripción
+    // Datos del postulante
     const postulanteData = {
       nombre: req.body.nombre,
       email: req.body.email,
-      telefono: req.body.telefono,
+      celular: req.body.celular,
       direccion: req.body.direccion,
       fechaNacimiento: req.body.fechaNacimiento,
-    };
-
-    const inscripcionData = {
-      nombre: req.body.nombre,
-      email: req.body.email,
-      userId: req.body.userId,
-      emprendedorId: req.body.emprendedorId,
-      comentario: req.body.comentario,
-      estado: req.body.estado,
+      rut: req.body.rut,
     };
 
     // Validar datos de postulante
@@ -83,9 +76,25 @@ exports.createInscripcion = async (req, res) => {
       return respondError(req, res, 400, postulanteError.details[0].message);
     }
 
+    // Verificar si el postulante ya existe
+    const existingPostulante = await Postulante.findOneAndUpdate(
+      { email: postulanteValue.email },
+      postulanteValue,
+      { upsert: true, new: true }, // upsert crea un nuevo documento si no existe
+    );
     // Crear nuevo postulante
     const nuevoPostulante = new Postulante(postulanteValue);
     const postulante = await nuevoPostulante.save();
+
+    // Datos de inscripcion
+    const inscripcionData = {
+      comentario: req.body.comentario,
+      estado: req.body.estado,
+      userId: req.body.userId,
+      emprendedorId: req.body.emprendedorId,
+      carreraId: req.body.carreraId,
+      nombre_puesto: req.body.nombre_puesto,
+    };
 
     // Validar datos de inscripción
     const { error: inscripcionError, value: inscripcionValue } =
@@ -150,26 +159,37 @@ exports.updateInscripcion = async (req, res) => {
       return respondError(req, res, 404, "Inscripción no encontrada");
     }
 
-    // Enviar correo de notificación
-    console.log("Enviando correo de notificación");
-    const postulante = await Postulante.findById(inscripcion.postulante);
-    const usuario = await User.findById(inscripcion.userId);
+    // Si el estado de la inscripción es "aprobada", crear un nuevo emprendedor
+    if (value.estado === "aprobada") {
+      const emprendedorData = {
+        userId: inscripcion.userId,
+        nombre_completo: inscripcion.nombre,
+        rut: inscripcion.rut, // Esto debe ser actualizado con el valor adecuado
+        celular: inscripcion.celular, // Esto debe ser actualizado con el valor adecuado
+        carreraId: inscripcion.carreraId, // Esto debe ser actualizado con el valor adecuado
+        nombre_puesto: inscripcion.nombre_puesto, // Esto puede ser actualizado según sea necesario
+        productosId: [],
+        ayudantesId: [],
+      };
 
-    if (postulante) {
-      const subject = "Estado de tu postulación";
-      const text = `Hola ${postulante.nombre},\n\nTu postulación ha sido ${estado}.\n\n`;
-      await sendMail(postulante.email, subject, text);
+      const nuevoEmprendedor = new Emprendedor(emprendedorData);
+      await nuevoEmprendedor.save();
 
-      // Asigna rol de emprendedor si es aceptada
-      if (estado === "aprobada" && usuario) {
-        console.log("Asignando rol de emprendedor al usuario");
+      // Actualizar el emprendedorId en la inscripción
+      inscripcion.emprendedorId = nuevoEmprendedor._id;
+      await inscripcion.save();
+
+      // Enviar correo de notificación
+      const subject = "Tu postulación ha sido aprobada";
+      const text = `Hola ${inscripcion.nombre},\n\nTu postulación ha sido aprobada.\n\n`;
+      await sendMail(inscripcion.email, subject, text);
+
+      // Asignar rol de emprendedor al usuario
+      const usuario = await User.findById(inscripcion.userId);
+      if (usuario) {
         usuario.role = "emprendedor";
         await usuario.save();
       }
-    } else {
-      console.log(
-        "Postulante no encontrado para enviar correo de notificación",
-      );
     }
 
     console.log("Solicitud procesada exitosamente");

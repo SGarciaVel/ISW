@@ -12,10 +12,10 @@ const postulanteSchema = new Schema(
       required: true,
       unique: true,
     },
-    telefono: {
+    /* telefono: {
       type: String,
       required: true,
-    },
+    }, */
     direccion: {
       type: String,
       required: true,
@@ -24,7 +24,6 @@ const postulanteSchema = new Schema(
       type: Date,
       required: true,
     },
-    // Otros campos relevantes para tu aplicación
   },
   { timestamps: true },
 );

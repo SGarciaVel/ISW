@@ -53,8 +53,16 @@ const inscripcionSchema = Joi.object({
   userId: Joi.string().required(),
   emprendedorId: Joi.string().required(),
   comentario: Joi.string().optional(),
-  estado: Joi.string().valid("pendiente", "aprobada", "rechazada", "sin inscripciones").required(),
+  estado: Joi.string()
+    .valid("pendiente", "aprobada", "rechazada", "sin inscripciones")
+    .required(),
   // postulante: Joi.string().required(),
+  rut: Joi.string().required(),
+  celular: Joi.string().required(),
+  carreraId: Joi.string().required(),
+  nombre_puesto: Joi.string().required(),
+  direccion: Joi.string().required(),
+  fechaNacimiento: Joi.date().required(),
 });
 
 module.exports = {

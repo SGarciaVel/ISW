@@ -1,4 +1,5 @@
 "use strict";
+const { required } = require("joi");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -41,6 +42,23 @@ const inscripcionSchema = new mongoose.Schema(
     fechaInscripcion: {
       type: Date,
       default: Date.now,
+      required: true,
+    },
+    rut: {
+      type: String,
+      required: true,
+    },
+    celular: {
+      type: String,
+      required: true,
+    },
+    carreraId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Carrera",
+    },
+    nombre_puesto: {
+      type: String,
       required: true,
     },
   },
