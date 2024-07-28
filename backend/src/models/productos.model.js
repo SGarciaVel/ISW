@@ -30,6 +30,11 @@ const productosSchema = new mongoose.Schema(
       min: 1,
       max: 300,
     },
+    precio: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
     emprendedorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Emprendedor",

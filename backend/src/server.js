@@ -12,7 +12,10 @@ const cookieParser = require("cookie-parser");
 const indexRoutes = require("./routes/indexPrueba.routes.js");
 const authRoutes = require("./routes/auth.routes.js");
 const inscripcionRoutes = require("./routes/inscripcionPrueba.routes.js");
+const postulanteRoutes = require("./routes/postulante.routes");
+const productoRoutes = require("./routes/productos.routes");
 const authorizationMiddleware = require("./middlewares/authorizationPrueba.middleware");
+
 // Importa el archivo 'configDB.js' para crear la conexión a la base de datos
 
 const { setupDB } = require("./config/configDB.js");
@@ -42,6 +45,8 @@ async function setupServer() {
     server.use("/api", indexRoutes);
     server.use("/api", authRoutes);
     server.use("/api", inscripcionRoutes);
+    server.use("/api", postulanteRoutes);
+    server.use("/api/productos", productoRoutes);
 
     // Middleware de autorizacion aplicado a las rutas especificas
     server.use(

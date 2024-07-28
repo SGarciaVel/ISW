@@ -15,7 +15,7 @@ const productosBodySchema = Joi.object({
     .messages({
       "string.empty": "La categoría no puede estar vacía.",
       "any.required": "La categoría es obligatoria.",
-      "string.base": "categoría debe ser de tipo string.",
+      "string.base": "La categoría debe ser de tipo string.",
       "string.max": "La categoría debe tener un máximo de 100 caracteres.",
       "string.pattern.base":
         // eslint-disable-next-line max-len

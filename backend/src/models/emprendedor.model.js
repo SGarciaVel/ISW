@@ -2,8 +2,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-//modelo de datos para emprendedores. Se crea un registro en la colección emprendedores.
-
 const emprendedorSchema = new mongoose.Schema(
   {
     userId: {
@@ -14,7 +12,7 @@ const emprendedorSchema = new mongoose.Schema(
     nombre_completo: {
       type: String,
       required: true,
-      maxLenght: 100,
+      maxLength: 100,
     },
     rut: {
       type: String,
@@ -23,8 +21,8 @@ const emprendedorSchema = new mongoose.Schema(
     celular: {
       type: String,
       required: true,
-      minLenght: 9,
-      maxLenght: 15,
+      minLength: 9,
+      maxLength: 15,
     },
     carreraId: {
       type: Schema.ObjectId,
@@ -34,9 +32,8 @@ const emprendedorSchema = new mongoose.Schema(
     nombre_puesto: {
       type: String,
       required: true,
-      maxLenght: 100,
+      maxLength: 100,
     },
-    //arreglo de productos que vende el emprendedor
     productosId: {
       type: [
         {
@@ -48,7 +45,6 @@ const emprendedorSchema = new mongoose.Schema(
       default: [],
       maxItems: 100,
     },
-    //arreglo de ayudantes que trabajan con el emprendedor
     ayudantesId: {
       type: [
         {

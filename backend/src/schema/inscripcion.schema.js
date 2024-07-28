@@ -50,11 +50,11 @@ const inscripcionIdSchema = Joi.object({
 const inscripcionSchema = Joi.object({
   nombre: Joi.string().required(),
   email: Joi.string().email().required(),
-  estado: Joi.string().valid("pendiente", "aprobada", "rechazada", "sin inscripciones").required(),
-  comentario: Joi.string().required(),
-  postulante: Joi.string().required(),
-  emprendedorId: Joi.string().required(),
   userId: Joi.string().required(),
+  emprendedorId: Joi.string().required(),
+  comentario: Joi.string().optional(),
+  estado: Joi.string().valid("pendiente", "aprobada", "rechazada", "sin inscripciones").required(),
+  // postulante: Joi.string().required(),
 });
 
 module.exports = {

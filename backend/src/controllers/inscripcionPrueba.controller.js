@@ -1,7 +1,10 @@
 const Inscripcion = require("../models/inscripcion.model");
 const User = require("../models/user.model");
+// const Emprendedor = require("../models/emprendedor.model");
+const Postulante = require("../models/postulante.model");
 const { respondSuccess, respondError } = require("../utils/resHandler");
 const { inscripcionSchema } = require("../schema/inscripcion.schema");
+const { postulanteSchema } = require("../schema/postulante.schema");
 const sendMail = require("../utils/nodemailer");
 const Joi = require("joi");
 
@@ -49,18 +52,59 @@ exports.getInscripcionById = async (req, res) => {
 // Crea una nueva inscripción
 exports.createInscripcion = async (req, res) => {
   try {
-    //aqui iba la validacion manual
     console.log("Datos recibidos para crear inscripción:", req.body);
-    const { error, value } = inscripcionSchema.validate(req.body);
-    if (error) {
-      console.error("Error en la validación:", error.details[0].message);
-      return respondError(req, res, 400, error.details[0].message);
+
+    // Separar datos del postulante y de la inscripción
+    const postulanteData = {
+      nombre: req.body.nombre,
+      email: req.body.email,
+      telefono: req.body.telefono,
+      direccion: req.body.direccion,
+      fechaNacimiento: req.body.fechaNacimiento,
+    };
+
+    const inscripcionData = {
+      nombre: req.body.nombre,
+      email: req.body.email,
+      userId: req.body.userId,
+      emprendedorId: req.body.emprendedorId,
+      comentario: req.body.comentario,
+      estado: req.body.estado,
+    };
+
+    // Validar datos de postulante
+    const { error: postulanteError, value: postulanteValue } =
+      postulanteSchema.validate(postulanteData);
+    if (postulanteError) {
+      console.error(
+        "Error en la validación de postulante:",
+        postulanteError.details[0].message,
+      );
+      return respondError(req, res, 400, postulanteError.details[0].message);
     }
 
+    // Crear nuevo postulante
+    const nuevoPostulante = new Postulante(postulanteValue);
+    const postulante = await nuevoPostulante.save();
+
+    // Validar datos de inscripción
+    const { error: inscripcionError, value: inscripcionValue } =
+      inscripcionSchema.validate(inscripcionData);
+    if (inscripcionError) {
+      console.error(
+        "Error en la validación de inscripción:",
+        inscripcionError.details[0].message,
+      );
+      return respondError(req, res, 400, inscripcionError.details[0].message);
+    }
+
+    // Crear nueva inscripción con el ID del postulante
     const nuevaInscripcion = new Inscripcion({
-      ...value,
+      ...inscripcionValue,
+      postulante: postulante._id, // Asocia el postulante creado con la inscripción
       fechaCreacion: new Date(),
     });
+
     const inscripcion = await nuevaInscripcion.save();
     console.log("Inscripción creada exitosamente:", inscripcion);
     respondSuccess(req, res, 201, inscripcion);
@@ -84,7 +128,9 @@ exports.updateInscripcion = async (req, res) => {
     console.log("Validando datos de la solicitud");
     // Usa Joi para validar el objeto completo
     const { error, value } = Joi.object({
-      estado: Joi.string().valid("pendiente", "aprobada", "rechazada", "sin inscripciones").required(),
+      estado: Joi.string()
+        .valid("pendiente", "aprobada", "rechazada", "sin inscripciones")
+        .required(),
       comentario: Joi.string().required(),
     }).validate({ estado, comentario });
 
@@ -106,20 +152,24 @@ exports.updateInscripcion = async (req, res) => {
 
     // Enviar correo de notificación
     console.log("Enviando correo de notificación");
-    const user = await User.findById(inscripcion.userId); // Asegúrate de que `user` esté correctamente inicializado
-    if (user) {
+    const postulante = await Postulante.findById(inscripcion.postulante);
+    const usuario = await User.findById(inscripcion.userId);
+
+    if (postulante) {
       const subject = "Estado de tu postulación";
-      const text = `Hola ${user.nombre},\n\nTu postulación ha sido ${estado}.\n\nComentario: ${comentario}`;
-      await sendMail(user.email, subject, text);
+      const text = `Hola ${postulante.nombre},\n\nTu postulación ha sido ${estado}.\n\n`;
+      await sendMail(postulante.email, subject, text);
 
       // Asigna rol de emprendedor si es aceptada
-      if (estado === "aceptado") {
+      if (estado === "aprobada" && usuario) {
         console.log("Asignando rol de emprendedor al usuario");
-        user.role = "emprendedor";
-        await user.save();
+        usuario.role = "emprendedor";
+        await usuario.save();
       }
     } else {
-      console.log("Usuario no encontrado para enviar correo de notificación");
+      console.log(
+        "Postulante no encontrado para enviar correo de notificación",
+      );
     }
 
     console.log("Solicitud procesada exitosamente");
