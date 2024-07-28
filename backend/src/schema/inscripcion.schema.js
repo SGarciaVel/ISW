@@ -48,21 +48,14 @@ const inscripcionIdSchema = Joi.object({
 });
 
 const inscripcionSchema = Joi.object({
-  nombre: Joi.string().required(),
-  email: Joi.string().email().required(),
-  userId: Joi.string().required(),
-  emprendedorId: Joi.string().required(),
-  comentario: Joi.string().optional(),
+  comentario: Joi.string().required(),
   estado: Joi.string()
     .valid("pendiente", "aprobada", "rechazada", "sin inscripciones")
     .required(),
-  // postulante: Joi.string().required(),
-  rut: Joi.string().required(),
-  celular: Joi.string().required(),
+  userId: Joi.string().required(),
+  emprendedorId: Joi.string().allow(null),
   carreraId: Joi.string().required(),
   nombre_puesto: Joi.string().required(),
-  direccion: Joi.string().required(),
-  fechaNacimiento: Joi.date().required(),
 });
 
 module.exports = {

@@ -5,33 +5,9 @@ const Schema = mongoose.Schema;
 
 const inscripcionSchema = new mongoose.Schema(
   {
-    nombre: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    userId: {
-      type: Schema.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    emprendedorId: {
-      type: Schema.ObjectId,
-      ref: "Emprendedor",
-      required: true,
-    },
     comentario: {
       type: String,
       default: "",
-    },
-    postulante: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Postulante",
-      required: true,
     },
     estado: {
       type: String,
@@ -39,17 +15,19 @@ const inscripcionSchema = new mongoose.Schema(
       default: "sin inscripciones",
       required: true,
     },
+    userId: {
+      type: Schema.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    emprendedorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Emprendedor",
+      default: null,
+    },
     fechaInscripcion: {
       type: Date,
       default: Date.now,
-      required: true,
-    },
-    rut: {
-      type: String,
-      required: true,
-    },
-    celular: {
-      type: String,
       required: true,
     },
     carreraId: {
@@ -61,6 +39,8 @@ const inscripcionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    postulante: { type: mongoose.Schema.Types.ObjectId, ref: "Postulante" },
+    // Agregar esto si es necesario
   },
   {
     versionKey: false,

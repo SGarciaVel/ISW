@@ -12,10 +12,9 @@ const postulanteSchema = new Schema(
       required: true,
       unique: true,
     },
-    /* telefono: {
+    celular: {
       type: String,
-      required: true,
-    }, */
+      required: true },
     direccion: {
       type: String,
       required: true,
@@ -24,6 +23,9 @@ const postulanteSchema = new Schema(
       type: Date,
       required: true,
     },
+    rut: {
+      type: String,
+      required: true },
   },
   { timestamps: true },
 );

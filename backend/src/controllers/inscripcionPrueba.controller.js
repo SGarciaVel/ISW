@@ -1,6 +1,5 @@
 const Inscripcion = require("../models/inscripcion.model");
 const User = require("../models/user.model");
-// const Emprendedor = require("../models/emprendedor.model");
 const Postulante = require("../models/postulante.model");
 const Emprendedor = require("../models/emprendedor.model");
 const { respondSuccess, respondError } = require("../utils/resHandler");
@@ -65,28 +64,28 @@ exports.createInscripcion = async (req, res) => {
       rut: req.body.rut,
     };
 
-    // Validar datos de postulante
-    const { error: postulanteError, value: postulanteValue } =
-      postulanteSchema.validate(postulanteData);
-    if (postulanteError) {
-      console.error(
-        "Error en la validación de postulante:",
-        postulanteError.details[0].message,
-      );
-      return respondError(req, res, 400, postulanteError.details[0].message);
-    }
+    console.log("Datos del postulante_:", postulanteData);
 
     // Verificar si el postulante ya existe
-    const existingPostulante = await Postulante.findOneAndUpdate(
-      { email: postulanteValue.email },
-      postulanteValue,
-      { upsert: true, new: true }, // upsert crea un nuevo documento si no existe
-    );
-    // Crear nuevo postulante
-    const nuevoPostulante = new Postulante(postulanteValue);
-    const postulante = await nuevoPostulante.save();
+    let postulante = await Postulante.findOne({ email: req.body.email });
+    if (!postulante) {
+      // Validar datos del postulante
+      const { error: postulanteError, value: postulanteValue } =
+        postulanteSchema.validate(postulanteData);
+      if (postulanteError) {
+        console.error(
+          "Error en la validación de postulante:",
+          postulanteError.details[0].message,
+        );
+        return respondError(req, res, 400, postulanteError.details[0].message);
+      }
 
-    // Datos de inscripcion
+      // Crear nuevo postulante
+      postulante = new Postulante(postulanteValue);
+      await postulante.save();
+    }
+
+    // Datos de la inscripción (no incluye postulante)
     const inscripcionData = {
       comentario: req.body.comentario,
       estado: req.body.estado,
@@ -95,23 +94,26 @@ exports.createInscripcion = async (req, res) => {
       carreraId: req.body.carreraId,
       nombre_puesto: req.body.nombre_puesto,
     };
-
     // Validar datos de inscripción
     const { error: inscripcionError, value: inscripcionValue } =
-      inscripcionSchema.validate(inscripcionData);
+      inscripcionSchema.validate(inscripcionData, { abortEarly: false });
     if (inscripcionError) {
       console.error(
         "Error en la validación de inscripción:",
-        inscripcionError.details[0].message,
+        inscripcionError.details.map((detail) => detail.message).join(", "),
       );
-      return respondError(req, res, 400, inscripcionError.details[0].message);
+      return respondError(
+        req,
+        res,
+        400,
+        inscripcionError.details.map((detail) => detail.message).join(", "),
+      );
     }
 
     // Crear nueva inscripción con el ID del postulante
     const nuevaInscripcion = new Inscripcion({
       ...inscripcionValue,
-      postulante: postulante._id, // Asocia el postulante creado con la inscripción
-      fechaCreacion: new Date(),
+      postulante: postulante._id,
     });
 
     const inscripcion = await nuevaInscripcion.save();
@@ -151,23 +153,33 @@ exports.updateInscripcion = async (req, res) => {
     console.log("Actualizando inscripción en la base de datos");
     const inscripcion = await Inscripcion.findByIdAndUpdate(
       id,
-      { estado: value.estado, comentario: value.comentario },
+      { estado, comentario },
       { new: true },
     );
+
     if (!inscripcion) {
       console.log("Inscripción no encontrada");
-      return respondError(req, res, 404, "Inscripción no encontrada");
+      return res
+        .status(404)
+        .json({ state: "Error", message: "Inscripción no encontrada" });
     }
-
     // Si el estado de la inscripción es "aprobada", crear un nuevo emprendedor
     if (value.estado === "aprobada") {
+      // Recuperar el postulante directamente desde el modelo Postulante usando el ID almacenado en la inscripción
+      const postulante = await Postulante.findById(inscripcion.postulante);
+
+      if (!postulante) {
+        console.log("Postulante asociado no encontrado");
+        return respondError(req, res, 404, "Postulante asociado no encontrado");
+      }
+
       const emprendedorData = {
         userId: inscripcion.userId,
-        nombre_completo: inscripcion.nombre,
-        rut: inscripcion.rut, // Esto debe ser actualizado con el valor adecuado
-        celular: inscripcion.celular, // Esto debe ser actualizado con el valor adecuado
-        carreraId: inscripcion.carreraId, // Esto debe ser actualizado con el valor adecuado
-        nombre_puesto: inscripcion.nombre_puesto, // Esto puede ser actualizado según sea necesario
+        nombre_completo: postulante.nombre,
+        rut: postulante.rut,
+        celular: postulante.celular,
+        carreraId: inscripcion.carreraId,
+        nombre_puesto: inscripcion.nombre_puesto,
         productosId: [],
         ayudantesId: [],
       };
@@ -181,8 +193,8 @@ exports.updateInscripcion = async (req, res) => {
 
       // Enviar correo de notificación
       const subject = "Tu postulación ha sido aprobada";
-      const text = `Hola ${inscripcion.nombre},\n\nTu postulación ha sido aprobada.\n\n`;
-      await sendMail(inscripcion.email, subject, text);
+      const text = `Hola ${postulante.nombre},\n\nTu postulación ha sido aprobada.\n\n`;
+      await sendMail(postulante.email, subject, text);
 
       // Asignar rol de emprendedor al usuario
       const usuario = await User.findById(inscripcion.userId);

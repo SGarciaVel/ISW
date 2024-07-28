@@ -4,14 +4,15 @@ const { respondSuccess, respondError } = require("../utils/resHandler");
 // Crea un nuevo postulante
 exports.createPostulante = async (req, res) => {
   try {
-    const { nombre, email, telefono, direccion, fechaNacimiento } = req.body;
+    const { nombre, email, celular, direccion, fechaNacimiento, rut } = req.body;
 
     const nuevoPostulante = new Postulante({
       nombre,
       email,
-      telefono,
+      celular,
       direccion,
       fechaNacimiento,
+      rut,
     });
 
     const postulante = await nuevoPostulante.save();
