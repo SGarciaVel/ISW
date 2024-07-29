@@ -1,13 +1,10 @@
-import React, { createContext, useState, useEffect } from 'react';
 
-export const ProductContext = createContext();
+import React, { createContext, useState } from 'react';
 
-const ProductProvider = ({ children }) => {
+const ProductContext = createContext();
+
+export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    // Aquí podrías hacer una llamada a la API para obtener los productos
-  }, []);
 
   return (
     <ProductContext.Provider value={{ products, setProducts }}>
@@ -16,4 +13,4 @@ const ProductProvider = ({ children }) => {
   );
 };
 
-export default ProductProvider;
+export default ProductContext;

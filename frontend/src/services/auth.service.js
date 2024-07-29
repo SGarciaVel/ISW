@@ -1,19 +1,19 @@
-import axios from "./axios.service";
-import cookies from "js-cookie";
-import jwtDecode from "jwt-decode";
+import axios from './root.service';
+import cookies from 'js-cookie';
+import jwtDecode from 'jwt-decode';
 
 export const login = async ({ email, password }) => {
   try {
-    const response = await axios.post("auth/login", {
+    const response = await axios.post('auth/login', {
       email,
       password,
     });
     const { status, data } = response;
     if (status === 200) {
       const { email, roles } = await jwtDecode(data.data.accessToken);
-      localStorage.setItem("user", JSON.stringify({ email, roles }));
+      localStorage.setItem('user', JSON.stringify({ email, roles }));
       axios.defaults.headers.common[
-        "Authorization"
+        'Authorization'
       ] = `Bearer ${data.data.accessToken}`;
     }
   } catch (error) {
@@ -22,14 +22,14 @@ export const login = async ({ email, password }) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("user");
-  delete axios.defaults.headers.common["Authorization"];
-  cookies.remove("jwt");
+  localStorage.removeItem('user');
+  delete axios.defaults.headers.common['Authorization'];
+  cookies.remove('jwt');
 };
 
 export const test = async () => {
   try {
-    const response = await axios.get("/users");
+    const response = await axios.get('/users');
     const { status, data } = response;
     if (status === 200) {
       console.log(data.data);

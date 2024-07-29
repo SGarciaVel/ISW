@@ -1,61 +1,63 @@
-// Importa el archivo 'configEnv.js' para cargar las variables de entorno
-const { PORT, HOST } = require("./config/configEnv.js");
-// Importa el módulo 'cors' para agregar los cors
-const cors = require("cors");
-// Importa el módulo 'express' para crear la aplicacion web
 const express = require("express");
-// Importamos morgan para ver las peticiones que se hacen al servidor
+const cors = require("cors");
 const morgan = require("morgan");
-// Importa el módulo 'cookie-parser' para manejar las cookies
 const cookieParser = require("cookie-parser");
-/** El enrutador principal */
+const { PORT, HOST } = require("./config/configEnv.js");
+
+// Importa las rutas
 const indexRoutes = require("./routes/indexPrueba.routes.js");
 const authRoutes = require("./routes/auth.routes.js");
 const inscripcionRoutes = require("./routes/inscripcionPrueba.routes.js");
 const postulanteRoutes = require("./routes/postulante.routes");
 const productoRoutes = require("./routes/productos.routes");
 const authorizationMiddleware = require("./middlewares/authorizationPrueba.middleware");
-
-// Importa el archivo 'configDB.js' para crear la conexión a la base de datos
-
 const { setupDB } = require("./config/configDB.js");
-// Importa el handler de errores
 const { handleFatalError, handleError } = require("./utils/errorHandler.js");
 const { createRoles, createUsers, newRoles } = require("./config/initialSetup");
 
-/**
- * Inicia el servidor web
- */
 async function setupServer() {
   try {
-    /** Instancia de la aplicacion */
     const server = express();
     server.disable("x-powered-by");
-    // Agregamos los cors
+
+    // Configuración de CORS
     server.use(cors({ credentials: true, origin: true }));
-    // Agrega el middleware para el manejo de datos en formato URL
+
+    // Middlewares
     server.use(express.urlencoded({ extended: true }));
-    // Agrega el middleware para el manejo de datos en formato JSON
     server.use(express.json());
-    // Agregamos el middleware para el manejo de cookies
     server.use(cookieParser());
-    // Agregamos morgan para ver las peticiones que se hacen al servidor
     server.use(morgan("dev"));
-    // Agrega el enrutador principal al servidor
+
+    // Rutas
     server.use("/api", indexRoutes);
     server.use("/api", authRoutes);
     server.use("/api", inscripcionRoutes);
     server.use("/api", postulanteRoutes);
     server.use("/api/productos", productoRoutes);
 
-    // Middleware de autorizacion aplicado a las rutas especificas
+    // Ruta de login
+    server.post("/api/login", (req, res) => {
+      const { email, password } = req.body;
+      if (email === "test@example.com" && password === "password") {
+        res.json({ token: "dummyToken" });
+      } else {
+        res.status(401).json({
+          state: "Error",
+          message: "Credenciales incorrectas",
+          details: {},
+        });
+      }
+    });
+
+    // Middleware de autorización
     server.use(
       "/api/inscripciones",
       authorizationMiddleware(["admin", "manager"]),
       inscripcionRoutes,
     );
 
-    // Inicia el servidor en el puerto especificado
+    // Iniciar el servidor
     server.listen(PORT, () => {
       console.log(`=> Servidor corriendo en ${HOST}:${PORT}/api`);
     });
@@ -64,28 +66,18 @@ async function setupServer() {
   }
 }
 
-/**
- * Inicia la API
- */
 async function setupAPI() {
   try {
-    // Inicia la conexión a la base de datos
     await setupDB();
-    // Inicia el servidor web
     await setupServer();
-    // Inicia la creación de los roles
     await createRoles();
-    // Inicia la creación del usuario admin y user
     await createUsers();
-    // Inicia la creación de los nuevos roles
     await newRoles();
   } catch (err) {
     handleFatalError(err, "/server.js -> setupAPI");
   }
 }
 
-// Inicia la API
 setupAPI()
   .then(() => console.log("=> API Iniciada exitosamente"))
   .catch((err) => handleFatalError(err, "/server.js -> setupAPI"));
-//

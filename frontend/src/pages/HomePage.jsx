@@ -1,18 +1,10 @@
-import React, { useContext } from "react";
-import { ProductContext } from "../context/ProductContext";
-import ProductCard from "../components/ProductCard";
+// src/pages/HomePage.jsx
+import React from 'react';
 
 const HomePage = () => {
-  const { products } = useContext(ProductContext);
-
   return (
     <div>
-      <h1>Inicio</h1>
-      <div className="product-list">
-        {products.map((product) => (
-          <ProductCard key={product._id} product={product} />
-        ))}
-      </div>
+      <h1>Bienvenido a la página de inicio</h1>
     </div>
   );
 };

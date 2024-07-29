@@ -1,19 +1,27 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState(null);
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAuth = () => useContext(AuthContext);
+
+// eslint-disable-next-line react/prop-types
+export function AuthProvider({ children }) {
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem('user')) || '';
+  const isAuthenticated = user ? true : false;
 
   useEffect(() => {
-    // Aquí podrías hacer una llamada a la API para verificar el estado de autenticación
-  }, []);
+    if (!isAuthenticated) {
+      navigate('/auth');
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{ isAuthenticated, user }}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-export default AuthProvider;
+}

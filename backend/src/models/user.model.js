@@ -16,6 +16,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      validate: {
+        validator: function (email) {
+          // Expresión regular para validar el dominio específico
+          return /^[a-zA-Z0-9._%+-]+@alumnos\.ubiobio\.cl$/.test(email);
+        },
+        message: "El email debe ser del dominio @alumnos.ubiobio.cl",
+      },
     },
     roles: [
       {

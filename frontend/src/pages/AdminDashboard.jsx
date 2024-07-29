@@ -1,10 +1,21 @@
+// src/pages/AdminDashboard.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 
-const AdminDashboard = () => (
-  <div>
-    <h1>Panel de Administración</h1>
-    {/* Aquí puedes añadir más detalles o componentes para el panel de administración */}
-  </div>
-);
+const AdminDashboard = () => {
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/inscriptions">Gestión de Inscripciones</Link>
+          </li>
+          {/* Otros enlaces del dashboard */}
+        </ul>
+      </nav>
+    </div>
+  );
+};
 
 export default AdminDashboard;

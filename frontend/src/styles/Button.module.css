@@ -1,0 +1,29 @@
+/* Button.module.css */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #3182ce; /* Azul oscuro */
+    color: white;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .btn:hover {
+    background-color: #2b6cb0; /* Azul más oscuro en hover */
+  }
+  
+  .btn:active {
+    transform: scale(0.98); /* Efecto de presionar */
+  }
+  
+  .btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6); /* Sombra al enfocar */
+  }
+  

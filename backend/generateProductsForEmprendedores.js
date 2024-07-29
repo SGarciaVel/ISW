@@ -15,17 +15,84 @@ mongoose
   .then(() => console.log("Conectado a MongoDB"))
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
-// Generar productos aleatorios
+// Lista de productos escolares con detalles
+const productosEscolares = [
+  {
+    nombre: "Cuaderno de rayas",
+    categoria: "Cuadernos",
+    descripcion: "Cuaderno de rayas para tomar apuntes.",
+    precio: 1600,
+  },
+  {
+    nombre: "Cuaderno cuadriculado",
+    categoria: "Cuadernos",
+    descripcion: "Cuaderno cuadriculado ideal para matemáticas.",
+    precio: 1800,
+  },
+  {
+    nombre: "Lápiz HB",
+    categoria: "Lápices",
+    descripcion: "Lápiz HB para escritura y dibujo.",
+    precio: 800,
+  },
+  {
+    nombre: "Bolígrafo azul",
+    categoria: "Bolígrafos",
+    descripcion: "Bolígrafo azul con tinta de secado rápido.",
+    precio: 1200,
+  },
+  {
+    nombre: "Marcador permanente",
+    categoria: "Marcadores",
+    descripcion: "Marcador permanente para etiquetar y marcar.",
+    precio: 1500,
+  },
+  {
+    nombre: "Resaltador",
+    categoria: "Marcadores",
+    descripcion: "Resaltador de colores para resaltar textos importantes.",
+    precio: 1000,
+  },
+  {
+    nombre: "Goma de borrar",
+    categoria: "Accesorios",
+    descripcion: "Goma de borrar para lápiz.",
+    precio: 600,
+  },
+  {
+    nombre: "Sacapuntas",
+    categoria: "Accesorios",
+    descripcion: "Sacapuntas con depósito.",
+    precio: 700,
+  },
+  {
+    nombre: "Regla de 30 cm",
+    categoria: "Accesorios",
+    descripcion: "Regla transparente de 30 cm.",
+    precio: 1200,
+  },
+  {
+    nombre: "Carpeta de anillas",
+    categoria: "Accesorios",
+    descripcion: "Carpeta de anillas para organizar documentos.",
+    precio: 2500,
+  },
+];
+
+// Generar productos escolares aleatorios
 const generateRandomProducts = (emprendedorId, numProducts) => {
   const products = [];
   for (let i = 0; i < numProducts; i++) {
+    // Selecciona un producto de la lista
+    const producto = faker.helpers.arrayElement(productosEscolares);
+
     products.push({
-      nombre: faker.commerce.productName(),
-      categoria: faker.commerce.department(),
-      fotografia: faker.image.url(),
-      descripcion: faker.lorem.sentence(),
+      nombre: producto.nombre,
+      categoria: producto.categoria,
+      fotografia: faker.image.imageUrl(), // Puedes mejorar esto más tarde si tienes imágenes específicas
+      descripcion: producto.descripcion,
       stock: faker.number.int({ min: 1, max: 300 }),
-      precio: parseFloat(faker.commerce.price()),
+      precio: producto.precio,
       emprendedorId: emprendedorId,
     });
   }

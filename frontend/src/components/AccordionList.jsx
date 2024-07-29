@@ -1,17 +1,19 @@
-import React from "react";
-import { Accordion, Box, Divider } from "@chakra-ui/react";
-import AccordionItemComponent from "./Accordion";
+import React, { useState, useEffect } from "react";
+import { Accordion, AccordionItem, AccordionButton, AccordionPanel, Box, Text, VStack, Flex, Icon, Button, Divider } from "@chakra-ui/react";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { MdSearch, MdVisibility, MdViewList } from "react-icons/md"; // Iconos para las nuevas acciones
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { logout } from "../services/auth.service";
 
 const accordionData = [
   {
-    title: "Gestión de emprendedores",
-    icon: "⚙️",
+    title: "Solicitudes de inscripción",
+    icon: "🗃️",
     links: [
-      { label: "Aprobación de registro", path: "/aprobacion-registro" },
-      {
-        label: "Listado de emprendedores inscritos",
-        path: "/listado-emprendedores-inscritos",
-      },
+      { label: "Buscar Inscripciones", path: "/buscar-inscripciones", icon: MdSearch },
+      { label: "Visualizar Solicitudes", path: "/visualizar-solicitudes", icon: MdVisibility },
+      { label: "Productos Inscritos", path: "/productos-inscritos", icon: MdViewList },
     ],
   },
   {
@@ -22,29 +24,93 @@ const accordionData = [
       { label: "Estado de inscripción", path: "/estado-inscripcion" },
     ],
   },
-  /** {
-    title: 'Otro acordeón',
-    icon: '📂',
-    links: [
-      { label: 'Otra opción 1', path: '/otra-opcion-1' },
-      { label: 'Otra opción 2', path: '/otra-opcion-2' },
-    ],
-  },*/
+  // Puedes añadir más objetos aquí si es necesario
 ];
 
 const AccordionList = () => {
-    return (
-      <Accordion allowToggle width="100%">
-        {accordionData.map((item, index) => (
-          <React.Fragment key={index}>
-            <Box mb={4} mt={index === 0 ? 0 : 4}>
-              <AccordionItemComponent title={item.title} icon={item.icon} links={item.links} />
-            </Box>
-            {index < accordionData.length - 1 && <Divider borderColor="whiteAlpha.400" />}
-          </React.Fragment>
-        ))}
-      </Accordion>
-    );
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    // Actualiza la fecha y hora cada segundo
+    const intervalId = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+
+    // Limpia el intervalo cuando el componente se desmonte
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/auth");
   };
+
+  return (
+    <Box p={4}>
+      <Accordion allowToggle width="100%" borderColor="whiteAlpha.400">
+        {accordionData.map((item, index) => (
+          <AccordionItem key={index} border="none">
+            {({ isExpanded }) => (
+              <>
+                <AccordionButton
+                  _expanded={{ bg: "teal.600", color: "white" }}
+                  _focus={{ boxShadow: "none" }}
+                  p={3}
+                  borderRadius="md"
+                  bg={isExpanded ? "teal.600" : "gray.700"}
+                  _hover={{ bg: "teal.500" }}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box flex="1" textAlign="left" display="flex" alignItems="center">
+                    <Text fontWeight="bold" fontSize="md" mr={2}>
+                      {item.icon} {item.title}
+                    </Text>
+                  </Box>
+                  {isExpanded ? (
+                    <ChevronUpIcon boxSize={5} color="white" />
+                  ) : (
+                    <ChevronDownIcon boxSize={5} color="white" />
+                  )}
+                </AccordionButton>
+                <AccordionPanel pb={4} bg="gray.800">
+                  <VStack align="start" spacing={2}>
+                    {item.links.map((link, linkIndex) => (
+                      <Flex key={linkIndex} align="center">
+                        {link.icon && <Icon as={link.icon} mr={2} />}
+                        <Text fontSize="sm" color="teal.300">
+                          <a href={link.path} style={{ textDecoration: 'none' }}>{link.label}</a>
+                        </Text>
+                      </Flex>
+                    ))}
+                  </VStack>
+                </AccordionPanel>
+                {index < accordionData.length - 1 && <Divider borderColor="gray.600" mt={4} />}
+              </>
+            )}
+          </AccordionItem>
+        ))}
+        <Box p={3} bg="gray.700" borderRadius="md" mt={6}>
+          <VStack spacing={1} align="start">
+            <Text fontSize="sm" color="white">
+              {currentDateTime.toLocaleDateString()}
+            </Text>
+            <Text fontSize="sm" color="white">
+              {currentDateTime.toLocaleTimeString()}
+            </Text>
+          </VStack>
+        </Box>
+      </Accordion>
+      {user && (
+        <Button colorScheme="teal" onClick={handleLogout} mt={6} width="100%">
+          Cerrar sesión
+        </Button>
+      )}
+    </Box>
+  );
+};
 
 export default AccordionList;
