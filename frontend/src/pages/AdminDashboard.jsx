@@ -1,4 +1,3 @@
-// src/pages/AdminDashboard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -11,7 +10,7 @@ const AdminDashboard = () => {
           <li>
             <Link to="/inscriptions">Gestión de Inscripciones</Link>
           </li>
-          {/* Otros enlaces del dashboard */}
+          {}
         </ul>
       </nav>
     </div>

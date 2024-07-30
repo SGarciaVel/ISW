@@ -208,6 +208,20 @@ exports.updateInscripcion = async (req, res) => {
       }
     }
 
+    // Si el estado de la inscripción es "rechazada", enviar correo al postulante
+    if (value.estado === "rechazada") {
+      const postulante = await Postulante.findById(inscripcion.postulante);
+
+      if (!postulante) {
+        console.log("Postulante asociado no encontrado");
+        return respondError(req, res, 404, "Postulante asociado no encontrado");
+      }
+
+      const subject = "Tu postulación ha sido rechazada";
+      const text = `Hola ${postulante.nombre},\n\nTu postulación ha sido rechazada. Comentario: ${comentario}\n\n`;
+      await sendMail(postulante.email, subject, text);
+    }
+
     console.log("Solicitud procesada exitosamente");
     respondSuccess(req, res, 200, inscripcion);
   } catch (error) {

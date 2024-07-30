@@ -14,7 +14,7 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import axios from "../services/root.service"; // Asegúrate de que la ruta sea correcta
+import axios from "../services/root.service";
 
 const BuscarInscripciones = () => {
   const [inscripciones, setInscripciones] = useState([]);

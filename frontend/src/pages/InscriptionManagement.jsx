@@ -1,4 +1,3 @@
-// src/pages/InscriptionManagement.jsx
 import React from 'react';
 
 const InscriptionManagement = () => {

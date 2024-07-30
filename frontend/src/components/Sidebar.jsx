@@ -9,13 +9,13 @@ function Sidebar() {
       bg="gray.900"
       color="white"
       width="235px"
-      p={4} // Ancho del borde
-      borderColor="gray.700" // Color del borde
-      height="100vh" // Altura completa de la ventana gráfica
+      p={4}
+      borderColor="gray.700"
+      height="100vh"
     >
       <VStack align="start" spacing={4} height="100%">
         <RouterLink to="/">
-          {/* Agrega algún contenido aquí si es necesario */}
+          {}
         </RouterLink>
 
         <AccordionList />

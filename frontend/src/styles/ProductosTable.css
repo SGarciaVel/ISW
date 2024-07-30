@@ -1,0 +1,27 @@
+.inscripcion-table,
+.resumen-table {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  border-collapse: collapse;
+}
+
+.inscripcion-table th,
+.resumen-table th,
+.inscripcion-table td,
+.resumen-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid #1a202c;
+}
+
+.inscripcion-table thead th,
+.resumen-table thead th {
+  background-color: #1a202c;
+  color: white;
+  font-weight: bold;
+}
+
+.inscripcion-table tbody tr:nth-child(odd),
+.resumen-table tbody tr:nth-child(odd) {
+  background-color: #dadada;
+}

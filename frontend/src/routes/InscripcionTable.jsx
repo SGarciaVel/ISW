@@ -1,6 +1,5 @@
-// src/routes/InscripcionTable.jsx
 import React from 'react';
-import InscripcionTable from '../pages/InscripcionTable'; // Ajusta la ruta si es necesario
+import InscripcionTable from '../pages/InscripcionTable';
 
 const InscripcionTableRoute = () => {
   return (

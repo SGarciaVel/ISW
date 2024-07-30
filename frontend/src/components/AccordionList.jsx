@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Accordion, AccordionItem, AccordionButton, AccordionPanel, Box, Text, VStack, Flex, Icon, Button, Divider } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
-import { MdSearch, MdVisibility, MdViewList } from "react-icons/md"; // Iconos para las nuevas acciones
+import { MdSearch, MdVisibility, MdViewList } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { logout } from "../services/auth.service";
@@ -24,7 +24,6 @@ const accordionData = [
       { label: "Estado de inscripción", path: "/estado-inscripcion" },
     ],
   },
-  // Puedes añadir más objetos aquí si es necesario
 ];
 
 const AccordionList = () => {
@@ -37,8 +36,6 @@ const AccordionList = () => {
     const intervalId = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000);
-
-    // Limpia el intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
   }, []);
 

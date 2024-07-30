@@ -1,4 +1,3 @@
-// src/pages/InscripcionesPage.jsx
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -15,8 +14,7 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import axios from "../services/root.service"; // Asegúrate de que la ruta sea correcta
-
+import axios from "../services/root.service";
 const InscripcionesPage = () => {
   const [inscripciones, setInscripciones] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,10 +23,10 @@ const InscripcionesPage = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    setError(null); // Limpiar errores antes de una nueva solicitud
+    setError(null);
     try {
-      const response = await axios.get("/api/inscripciones", { params: data }); // Asegúrate de que esta ruta sea correcta
-      setInscripciones(response.data.inscripciones); // Ajusta según la estructura de la respuesta
+      const response = await axios.get("/api/inscripciones", { params: data });
+      setInscripciones(response.data.inscripciones);
     } catch (err) {
       setError("Error al obtener inscripciones. Inténtalo de nuevo.");
     } finally {
@@ -59,7 +57,7 @@ const InscripcionesPage = () => {
                 <Th>ID</Th>
                 <Th>Nombre</Th>
                 <Th>Fecha</Th>
-                {/* Agrega más encabezados según la estructura de tus datos */}
+                {}
               </Tr>
             </Thead>
             <Tbody>
@@ -68,7 +66,7 @@ const InscripcionesPage = () => {
                   <Td>{inscripcion.id}</Td>
                   <Td>{inscripcion.nombre}</Td>
                   <Td>{inscripcion.fecha}</Td>
-                  {/* Agrega más datos según la estructura de tus datos */}
+                  {}
                 </Tr>
               ))}
             </Tbody>

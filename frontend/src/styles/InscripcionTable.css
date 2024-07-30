@@ -18,7 +18,7 @@
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #2d3748; /* gray.900 */
+  background-color: #2d3748;
   color: white;
 }
 
@@ -37,18 +37,18 @@
   font-size: 14px;
   border-radius: 4px;
   margin: 5px;
-  width: 100px; /* Asegurar que ambos botones tengan el mismo ancho */
-  display: inline-block; /* Asegurar que ambos botones tengan el mismo tamaño */
+  width: 100px;
+  display: inline-block;
   text-align: center;
 }
 
 .accept-btn {
-  background-color: #2d3748; /* gray.800 */
+  background-color: #2d3748;
   color: white;
 }
 
 .accept-btn:hover {
-  background-color: #4a5568; /* Slightly lighter shade for hover effect */
+  background-color: #4a5568;
 }
 
 .reject-btn {
@@ -58,4 +58,34 @@
 
 .reject-btn:hover {
   background-color: #da190b;
+}
+.pagination-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination-btn {
+  background-color: #2d3748;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination-btn:disabled {
+  background-color: #4a5568;
+  cursor: not-allowed;
+}
+
+.pagination-btn:hover {
+  background-color: #4a5568;
+}
+
+.pagination-info {
+  color: rgb(0, 0, 0);
+  margin: 0 10px;
 }
