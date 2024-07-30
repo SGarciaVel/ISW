@@ -21,9 +21,13 @@ exports.getAllInscripciones = async (req, res) => {
   }
 
   try {
-    const inscripciones = await Inscripcion.find().skip(skip).limit(limit);
+    const inscripciones = await Inscripcion.find(filters)
+      .populate("userId")
+      .populate("emprendedorId")
+      .populate("carreraId")
+      .skip(skip)
+      .limit(limit);
     const total = await Inscripcion.countDocuments(filters);
-    // respondSuccess(req, res, 200, inscripciones);
     respondSuccess(req, res, 200, {
       total,
       page,

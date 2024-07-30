@@ -1,13 +1,19 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:5000/api';
-
 const instance = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
+  baseURL: 'http://localhost:5000/api', // Asegúrate de que esta URL sea correcta
+  timeout: 10000,
+});
+
+// Configuración de interceptores para agregar el token a cada solicitud
+instance.interceptors.request.use(config => {
+  const token = localStorage.getItem('accessToken'); // Obtener el token
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // Agregar el token al encabezado
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
 });
 
 export default instance;

@@ -8,11 +8,11 @@ function Root() {
   return (
     <ChakraProvider>
       <AuthProvider>
-        <Box minHeight="100vh" bg="gray.50">
+        <Box>
           <Header />
-          <Flex direction="row" align="flex-start" p="4" spacing="4">
+          <Flex>
             <Sidebar />
-            <Box flex="1" bg="white" borderRadius="md" boxShadow="md" p="6">
+            <Box flex="1" p="4">
               <Outlet />
             </Box>
           </Flex>

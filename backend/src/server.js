@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 const { PORT, HOST } = require("./config/configEnv.js");
 
 // Importa las rutas
@@ -29,37 +30,69 @@ async function setupServer() {
     server.use(cookieParser());
     server.use(morgan("dev"));
 
-    // Rutas
+    // Rutas de API
     server.use("/api", indexRoutes);
     server.use("/api", authRoutes);
-    server.use("/api", inscripcionRoutes);
-    server.use("/api", postulanteRoutes);
-    server.use("/api/productos", productoRoutes);
 
-    // Ruta de login
-    server.post("/api/login", (req, res) => {
-      const { email, password } = req.body;
-      if (email === "test@example.com" && password === "password") {
-        res.json({ token: "dummyToken" });
-      } else {
-        res.status(401).json({
-          state: "Error",
-          message: "Credenciales incorrectas",
-          details: {},
-        });
+    // Rutas protegidas
+    server.use(
+      "/api/inscripciones",
+      authorizationMiddleware(["admin", "manager"]),
+      inscripcionRoutes,
+    );
+    server.use("/api", postulanteRoutes);
+    server.use(
+      "/api/productos",
+      authorizationMiddleware(["admin", "manager"]),
+      productoRoutes,
+    );
+
+    server.post("/auth/login", async (req, res) => {
+      try {
+        // Verifica las credenciales del usuario
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user || !user.verifyPassword(password)) {
+          return res.status(401).json({ error: "Credenciales inválidas" });
+        }
+
+        // Genera el token
+        const token = jwt.sign(
+          { email: user.email, roles: user.roles },
+          ACCESS_JWT_SECRET,
+          { expiresIn: "1h" },
+        );
+
+        // Envía el token en la respuesta
+        res.json({ token });
+      } catch (error) {
+        res.status(500).json({ error: "Error en el servidor" });
       }
     });
-
     // Middleware de autorización
     server.use(
       "/api/inscripciones",
       authorizationMiddleware(["admin", "manager"]),
       inscripcionRoutes,
     );
+    server.use(
+      "/api/productos",
+      authorizationMiddleware(["admin", "manager"]),
+      productoRoutes,
+    );
+
+    // Configura el directorio estático para el front-end
+    server.use(express.static(path.join(__dirname, "../frontend")));
+
+    // Enrutamiento para servir el archivo index.html
+    server.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname, "../frontend", "index.html"));
+    });
 
     // Iniciar el servidor
     server.listen(PORT, () => {
-      console.log(`=> Servidor corriendo en ${HOST}:${PORT}/api`);
+      console.log(`=> Servidor corriendo en ${HOST}:${PORT}`);
     });
   } catch (err) {
     handleError(err, "/server.js -> setupServer");

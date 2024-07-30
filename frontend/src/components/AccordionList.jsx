@@ -11,9 +11,9 @@ const accordionData = [
     title: "Solicitudes de inscripción",
     icon: "🗃️",
     links: [
-      { label: "Buscar Inscripciones", path: "/buscar-inscripciones", icon: MdSearch },
-      { label: "Visualizar Solicitudes", path: "/visualizar-solicitudes", icon: MdVisibility },
-      { label: "Productos Inscritos", path: "/productos-inscritos", icon: MdViewList },
+      { label: "Buscar Inscripciones", path: "/inscripciones", icon: MdSearch },
+      { label: "Visualizar Solicitudes", path: "/inscripcion-table", icon: MdVisibility },
+      { label: "Productos Inscritos", path: "/productos", icon: MdViewList },
     ],
   },
   {

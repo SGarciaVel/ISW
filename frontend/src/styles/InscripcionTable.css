@@ -1,0 +1,61 @@
+.table-container {
+  margin: 20px;
+}
+
+.inscripcion-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.inscripcion-table th,
+.inscripcion-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.inscripcion-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #2d3748; /* gray.900 */
+  color: white;
+}
+
+.inscripcion-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.inscripcion-table tr:hover {
+  background-color: #ddd;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+  margin: 5px;
+  width: 100px; /* Asegurar que ambos botones tengan el mismo ancho */
+  display: inline-block; /* Asegurar que ambos botones tengan el mismo tamaño */
+  text-align: center;
+}
+
+.accept-btn {
+  background-color: #2d3748; /* gray.800 */
+  color: white;
+}
+
+.accept-btn:hover {
+  background-color: #4a5568; /* Slightly lighter shade for hover effect */
+}
+
+.reject-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #da190b;
+}

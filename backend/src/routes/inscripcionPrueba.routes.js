@@ -24,9 +24,22 @@ router.post(
 router.get(
   "/",
   authenticateToken,
+  isAdminOrManagement,
   inscripcionPruebaController.getAllInscripciones,
 );
 router.get("/:id", inscripcionPruebaController.getInscripcionById);
+
+// Define la ruta para obtener inscripciones
+router.get("/inscripciones", async (req, res) => {
+  try {
+    // Obtener inscripciones desde la base de datos
+    const inscripciones = await Inscripcion.find();
+    res.json({ inscripciones });
+  } catch (error) {
+    console.error("Error al obtener inscripciones:", error); // Imprime el error en los logs
+    res.status(500).json({ error: "Error al obtener inscripciones" });
+  }
+});
 
 router.put(
   "/:id",
@@ -39,6 +52,10 @@ router.put(
 //router.put("/inscripciones/:id", inscripcionPruebaController.updateInscripcion);
 
 // router.post("/", inscripcionPruebaController.createInscripcion);
-router.delete("/:id", authenticateToken, inscripcionPruebaController.deleteInscripcion);
+router.delete(
+  "/:id",
+  authenticateToken,
+  inscripcionPruebaController.deleteInscripcion,
+);
 
 module.exports = router;

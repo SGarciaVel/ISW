@@ -16,7 +16,7 @@ const inscripcionSchema = new mongoose.Schema(
       required: true,
     },
     userId: {
-      type: Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -40,7 +40,6 @@ const inscripcionSchema = new mongoose.Schema(
       required: true,
     },
     postulante: { type: mongoose.Schema.Types.ObjectId, ref: "Postulante" },
-    // Agregar esto si es necesario
   },
   {
     versionKey: false,
