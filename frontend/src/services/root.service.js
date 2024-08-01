@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'http://146.83.198.35:1259/api',
   timeout: 10000,
 });
 
-// Configuración de interceptores para agregar el token a cada solicitud
+// Configuracion de interceptores para agregar el token a cada solicitud
 instance.interceptors.request.use(config => {
   const token = localStorage.getItem('accessToken'); // Obtener el token
   if (token) {
