@@ -19,7 +19,8 @@ const ProductosInscritos = () => {
         setProductos(productosResponse.data);
 
         const emprendedoresResponse = await axios.get('/emprendedores');
-        setEmprendedores(emprendedoresResponse.data);
+        const data = Array.isArray(emprendedoresResponse.data.data) ? emprendedoresResponse.data.data : [];
+        setEmprendedores(data);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Error al obtener datos. Asegúrate de estar autenticado.');
@@ -52,15 +53,16 @@ const ProductosInscritos = () => {
 
   const categoriaCounts = productos.reduce((acc, producto) => {
     if (!acc[producto.categoria]) {
-      acc[producto.categoria] = new Set();
+      acc[producto.categoria] = { count: 0, emprendedores: new Set() };
     }
-    acc[producto.categoria].add(producto.emprendedorId);
+    acc[producto.categoria].emprendedores.add(producto.emprendedorId);
     return acc;
   }, {});
 
-  const categoriaResumen = Object.entries(categoriaCounts).map(([categoria, emprendedoresSet]) => ({
+  const categoriaResumen = Object.entries(categoriaCounts).map(([categoria, { emprendedores }]) => ({
     categoria,
-    cantidadEmprendedores: emprendedoresSet.size
+    cantidadEmprendedores: emprendedores.size,
+    nombresEmprendedores: Array.from(emprendedores).map(id => emprendedoresMap[id]).filter(Boolean).join(', ')
   }));
 
   return (
@@ -97,7 +99,7 @@ const ProductosInscritos = () => {
                       <Td>
                         {emprendedoresMap[producto.emprendedorId] ? emprendedoresMap[producto.emprendedorId] : 'Desconocido'}
                       </Td>
-                      <Td>${producto.precio.toFixed(2)}</Td>
+                      <Td>${producto.precio}</Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -130,6 +132,7 @@ const ProductosInscritos = () => {
               <Tr>
                 <Th>Categoría</Th>
                 <Th>Cantidad de Emprendedores</Th>
+                <Th>Nombres de Emprendedores</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -137,6 +140,7 @@ const ProductosInscritos = () => {
                 <Tr key={resumen.categoria}>
                   <Td>{resumen.categoria}</Td>
                   <Td>{resumen.cantidadEmprendedores}</Td>
+                  <Td>{resumen.nombresEmprendedores}</Td>
                 </Tr>
               ))}
             </Tbody>

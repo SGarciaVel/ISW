@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import '../styles/LoginPage.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -12,27 +13,31 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <button type="submit">Login</button>
-      </form>
+    <div className="login-page">
+      <div className="login-container">
+        <h1>Login</h1>
+        <form onSubmit={handleSubmit} className="login-form">
+          <label className="form-label">
+            Email:
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-input"
+            />
+          </label>
+          <label className="form-label">
+            Password:
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-input"
+            />
+          </label>
+          <button type="submit" className="submit-button">Login</button>
+        </form>
+      </div>
     </div>
   );
 };
